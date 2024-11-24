@@ -1060,9 +1060,13 @@ public abstract class MixinServerGamePacketListenerImpl implements InjectionServ
 
         // Arm swing animation
         PlayerAnimationEvent event = new PlayerAnimationEvent(this.getCraftPlayer(), packet.getHand() == InteractionHand.MAIN_HAND ? PlayerAnimationType.ARM_SWING : PlayerAnimationType.OFF_ARM_SWING);
+        System.out.println("Event Anim Type: " + event.getAnimationType() + "Player: " + event.getPlayer() + "Is Cancelled: " + event.isCancelled() + "Handlers: " + event.getHandlers().toString() + "Event Name: " + event.getEventName() + "Event Class: " + event.getClass().toString() + "All Event" + event);
         this.cserver.getPluginManager().callEvent(event);
 
-        if (event.isCancelled()) ci.cancel();
+        if (event.isCancelled()) {
+            System.out.println("Cancelled");
+            ci.cancel();
+        }
         // CraftBukkit end
     }
 

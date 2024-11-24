@@ -15,7 +15,6 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -33,6 +32,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.TreeType;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
@@ -40,7 +40,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityTransformEvent;
 
 public class BukkitExtraConstants {
-
     public static TreeType treeType; // CraftBukkit
     public static BlockPos openSign; // CraftBukkit
     public static int bridge$autosavePeriod;
@@ -102,34 +101,36 @@ public class BukkitExtraConstants {
         return i % 32 == 0 ? 0.5D : 0.0D;
     }
 
-    public static AABB recalculateBoundingBox(Entity entity, BlockPos blockPosition, Direction direction, int width, int height) {
-        double d0 = blockPosition.getX() + 0.5;
-        double d2 = blockPosition.getY() + 0.5;
-        double d3 = blockPosition.getZ() + 0.5;
-        double d4 = 0.46875;
-        double d5 = a(width);
-        double d6 = a(height);
-        d0 -= direction.getStepX() * 0.46875;
-        d3 -= direction.getStepZ() * 0.46875;
-        d2 += d6;
-        Direction enumdirection = direction.getCounterClockWise();
-        d0 += d5 * enumdirection.getStepX();
-        d3 += d5 * enumdirection.getStepZ();
-        if (entity != null) {
-            entity.setPosRaw(d0, d2, d3);
-        }
-        double d7 = width;
-        double d8 = height;
-        double d9 = width;
-        if (direction.getAxis() == Direction.Axis.Z) {
-            d9 = 1.0;
-        } else {
-            d7 = 1.0;
-        }
-        d7 /= 32.0;
-        d8 /= 32.0;
-        d9 /= 32.0;
-        return new AABB(d0 - d7, d2 - d8, d3 - d9, d0 + d7, d2 + d8, d3 + d9);
+    public static AABB calculateBoundingBoxStatic(BlockPos blockposition, Direction enumdirection) {
+        // CraftBukkit end
+        float f = 0.46875F;
+        Vec3 vec3d = Vec3.atCenterOf(blockposition).relative(enumdirection, -0.46875D);
+        Direction.Axis enumdirection_enumaxis = enumdirection.getAxis();
+        double d0 = enumdirection_enumaxis == Direction.Axis.X ? 0.0625D : 0.75D;
+        double d1 = enumdirection_enumaxis == Direction.Axis.Y ? 0.0625D : 0.75D;
+        double d2 = enumdirection_enumaxis == Direction.Axis.Z ? 0.0625D : 0.75D;
+
+        return AABB.ofSize(vec3d, d0, d1, d2);
+    }
+
+    public static AABB recalculateBoundingBox(BlockPos blockPosition, Direction direction, int width, int height) {
+        // CraftBukkit end
+        float f = 0.46875F;
+        Vec3 vec3d = Vec3.atCenterOf(blockPosition).relative(direction, -0.46875D);
+        // CraftBukkit start
+        double d0 = a(width);
+        double d1 = a(height);
+        // CraftBukkit end
+        Direction enumdirection1 = direction.getCounterClockWise();
+        Vec3 vec3d1 = vec3d.relative(enumdirection1, d0).relative(Direction.UP, d1);
+        Direction.Axis enumdirection_enumaxis = direction.getAxis();
+        // CraftBukkit start
+        double d2 = enumdirection_enumaxis == Direction.Axis.X ? 0.0625D : (double) width;
+        double d3 = (double) height;
+        double d4 = enumdirection_enumaxis == Direction.Axis.Z ? 0.0625D : (double) width;
+        // CraftBukkit end
+
+        return AABB.ofSize(vec3d1, d2, d3, d4);
     }
 
     public static InteractionResult applyBonemeal(UseOnContext context) {
