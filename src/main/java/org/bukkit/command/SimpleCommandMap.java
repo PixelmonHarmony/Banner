@@ -239,12 +239,14 @@ public class SimpleCommandMap implements CommandMap {
 
         try {
             return target.tabComplete(sender, commandName, args, location);
-        } catch (CommandException ex) {
-            throw ex;
+//        } catch (CommandException ex) {
+//            throw ex;
         } catch (Throwable ex) {
-            String msg = "Unhandled exception executing tab-completer for '" + cmdLine + "' in " + target;
+            String msg = "Unhandled exception executing tab-completer for '" + cmdLine + "' in " + target + ". Returning empty";
             server.getPluginManager().callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerTabCompleteException(msg, ex, target, sender, args))); // Paper
-            throw new CommandException(msg, ex);
+
+            return Collections.emptyList();
+//            throw new CommandException(msg, ex);
         }
     }
 
