@@ -8,6 +8,7 @@ import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.shorts.ShortArraySet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.advancements.AdvancementProgress;
@@ -67,6 +68,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.border.BorderChangeListener;
+import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
@@ -959,11 +961,14 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         System.out.println("Teleporting: " + this.getDisplayName() + " to " + to.getX() + ", " + to.getY() + ", " + to.getZ() + " in world " + to.getWorld().getName());
 
         // Check if the fromWorld and toWorld are the same.
-        if (fromWorld == toWorld) {
-            entity.connection.teleport(to);
-        } else {
-            entity.teleportTo(toWorld, to.getX(), to.getY(), to.getZ(), to.getYaw(), to.getPitch());
-        }
+
+        FabricDimensions.teleport(entity, toWorld, new PortalInfo(new Vec3(to.getX(), to.getY(), to.getZ()), Vec3.ZERO, to.getYaw(), to.getPitch()));
+
+//        if (fromWorld == toWorld) {
+//            entity.connection.teleport(to);
+//        } else {
+//            entity.teleportTo(toWorld, to.getX(), to.getY(), to.getZ(), to.getYaw(), to.getPitch());
+//        }
         return true;
     }
 
