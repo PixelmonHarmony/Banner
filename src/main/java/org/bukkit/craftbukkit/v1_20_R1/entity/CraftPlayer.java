@@ -922,21 +922,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
             return false;
         }
 
-// From = Player's current Location
+        // From = Players current Location
         Location from = this.getLocation();
-// To = Player's new Location if Teleport is Successful
-        Location to = location.clone(); // Clone to avoid modifying the original location
-
-// Check if the player is teleporting within the same world
-        if (from.getWorld().equals(to.getWorld())) {
-            // Adjust the Y-coordinate by increasing it by 1
-            to.setY(to.getY() + 1);
-        }
-
-// Create & Call the Teleport Event with the adjusted 'to' location
+        // To = Players new Location if Teleport is Successful
+        Location to = location;
+        // Create & Call the Teleport Event.
         PlayerTeleportEvent event = new PlayerTeleportEvent(this, from, to, cause);
         server.getPluginManager().callEvent(event);
-
 
         // Return False to inform the Plugin that the Teleport was unsuccessful/cancelled.
         if (event.isCancelled()) {
@@ -968,14 +960,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
         // Check if the fromWorld and toWorld are the same.
         if (fromWorld == toWorld) {
-            // Clone the 'to' location to avoid modifying the original
-            Location adjustedTo = to.clone();
-
-            // Adjust the Y-coordinate as needed (e.g., increase by 1)
-            adjustedTo.setY(adjustedTo.getY() + 1);
-
-            // Teleport the entity using the adjusted location
-            entity.connection.teleport(adjustedTo);
+            entity.connection.teleport(to);
+        } else {
+            entity.teleportTo(toWorld, to.getX(), to.getY(), to.getZ(), to.getYaw(), to.getPitch());
         }
         return true;
     }
