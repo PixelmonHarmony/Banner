@@ -294,7 +294,7 @@ public interface BukkitScheduler {
      * @throws IllegalArgumentException if task is null
      */
     @NotNull
-    public BukkitTask runTaskLater(@NotNull Plugin plugin, @NotNull Runnable task, long delay) throws IllegalArgumentException;
+    public BukkitTask runTaskLater(Plugin plugin, @NotNull Runnable task, long delay) throws IllegalArgumentException;
 
     /**
      * Returns a task that will run after the specified number of server

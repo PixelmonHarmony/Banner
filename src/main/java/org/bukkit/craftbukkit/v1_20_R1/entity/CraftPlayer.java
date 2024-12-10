@@ -123,6 +123,7 @@ import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R1.map.CraftMapView;
 import org.bukkit.craftbukkit.v1_20_R1.map.RenderData;
 import org.bukkit.craftbukkit.v1_20_R1.profile.CraftPlayerProfile;
+import org.bukkit.craftbukkit.v1_20_R1.scheduler.CraftScheduler;
 import org.bukkit.craftbukkit.v1_20_R1.scoreboard.CraftScoreboard;
 import org.bukkit.craftbukkit.v1_20_R1.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_20_R1.util.CraftLocation;
@@ -145,8 +146,11 @@ import org.bukkit.map.MapCursor;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.profile.PlayerProfile;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
@@ -171,6 +175,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -962,7 +967,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
         // Check if the fromWorld and toWorld are the same.
 
+
         FabricDimensions.teleport(entity, toWorld, new PortalInfo(new Vec3(to.getX(), to.getY() + 1, to.getZ()), Vec3.ZERO, to.getYaw(), to.getPitch()));
+
+        Location finalTo = to;
+        Bukkit.getScheduler().runTaskLater(null, () -> FabricDimensions.teleport(entity, toWorld, new PortalInfo(new Vec3(finalTo.getX(), finalTo.getY() + 1, finalTo.getZ()), Vec3.ZERO, finalTo.getYaw(), finalTo.getPitch())), 5);
 
 //        if (fromWorld == toWorld) {
 //            entity.connection.teleport(to);

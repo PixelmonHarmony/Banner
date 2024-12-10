@@ -156,6 +156,10 @@ public class CraftScheduler implements BukkitScheduler {
         return runTaskTimer(plugin, runnable, delay, CraftTask.NO_REPEATING);
     }
 
+    public BukkitTask runBukkitTaskLater(Runnable runnable, long delay) {
+        return runTaskTimer(null, runnable, delay, CraftTask.NO_REPEATING);
+    }
+
     @Override
     public void runTaskLater(Plugin plugin, Consumer<BukkitTask> task, long delay) throws IllegalArgumentException {
         runTaskTimer(plugin, task, delay, CraftTask.NO_REPEATING);
@@ -198,7 +202,7 @@ public class CraftScheduler implements BukkitScheduler {
     }
 
     public BukkitTask runTaskTimer(Plugin plugin, Object runnable, long delay, long period) {
-        validate(plugin, runnable);
+//        validate(plugin, runnable);
         if (delay < 0L) {
             delay = 0;
         }
