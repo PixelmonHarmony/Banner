@@ -136,6 +136,10 @@ dependencies {
 
 	// Kyori
 	implementation(include("net.kyori:adventure-platform-fabric:5.9.0"))
+
+	// ForgeVaultBridge
+	implementation(include("com.github.MilkBowl:VaultAPI:1.7.1"))
+
 	// Paper start
 	implementation(include("net.kyori:adventure-api:4.14.0"))
 	implementation(include("net.kyori:adventure-key:4.14.0"))

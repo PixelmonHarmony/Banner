@@ -35,6 +35,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import tech.sethi.pebbles.forgevaultbridge.Forgevaultbridge;
 
 @Mixin(DedicatedServer.class)
 public abstract class MixinDedicatedServer extends MinecraftServer {
@@ -55,6 +56,10 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         org.spigotmc.SpigotConfig.registerCommands();
         this.bridge$server().loadPlugins();
         this.bridge$server().enablePlugins(PluginLoadOrder.STARTUP);
+
+        //Start ForgeVaultBridge
+        Forgevaultbridge.onServerStarting();
+        //End ForgeVaultBridge
     }
 
     @Inject(method = "initServer",
