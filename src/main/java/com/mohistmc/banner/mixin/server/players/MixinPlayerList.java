@@ -12,11 +12,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -87,6 +83,7 @@ import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.command.ColouredConsoleSender;
@@ -175,6 +172,9 @@ public abstract class MixinPlayerList implements InjectionPlayerList {
         BannerServer.LOGGER.info(I18n.as("registry.begin"));
         BukkitRegistry.registerAll((DedicatedServer) minecraftServer);
         minecraftServer.banner$setConsole(ColouredConsoleSender.getInstance());
+
+        System.out.println("Printing out all materials:");
+        Arrays.stream(Material.values()).map(Enum::name).forEach(System.out::println);
     }
 
     @Inject(method = "placeNewPlayer", at = @At (value = "INVOKE",
