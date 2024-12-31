@@ -64,7 +64,7 @@ public abstract class MixinExperienceOrb {
 
     @Redirect(method = "playerTouch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;giveExperiencePoints(I)V"))
     private void banner$expChange(Player player, int amount) {
-        player.giveExperiencePoints(CraftEventFactory.callPlayerExpChangeEvent(player, amount).getAmount());
+        player.giveExperiencePoints(CraftEventFactory.callPlayerExpChangeEvent(player, (ExperienceOrb) (Object) this).getAmount());
     }
 
     /**
