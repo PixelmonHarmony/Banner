@@ -27,6 +27,17 @@ import static org.bukkit.craftbukkit.v1_20_R1.inventory.CraftMetaItem.ENCHANTMEN
 
 @DelegateDeserialization(ItemStack.class)
 public final class CraftItemStack extends ItemStack {
+    private static final java.lang.invoke.VarHandle API_ITEM_STACK_CRAFT_DELEGATE_FIELD;
+    static {
+        try {
+            API_ITEM_STACK_CRAFT_DELEGATE_FIELD = java.lang.invoke.MethodHandles.privateLookupIn(
+                    ItemStack.class,
+                    java.lang.invoke.MethodHandles.lookup()
+            ).findVarHandle(ItemStack.class, "craftDelegate", ItemStack.class);
+        } catch (final IllegalAccessException | NoSuchFieldException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
     public static net.minecraft.world.item.ItemStack asNMSCopy(ItemStack original) {
         if (original instanceof CraftItemStack) {
@@ -446,5 +457,20 @@ public final class CraftItemStack extends ItemStack {
 
     static boolean hasItemMeta(net.minecraft.world.item.ItemStack item) {
         return !(item == null || item.getTag() == null || item.getTag().isEmpty());
+    }
+
+    public static net.minecraft.world.item.ItemStack unwrap(ItemStack bukkit) {
+        // Paper start - re-implement after delegating all api ItemStack calls to CraftItemStack
+        final CraftItemStack craftItemStack = getCraftStack(bukkit);
+        return craftItemStack.handle == null ? net.minecraft.world.item.ItemStack.EMPTY : craftItemStack.handle;
+        // Paper end - re-implement after delegating all api ItemStack calls to CraftItemStack
+    }
+
+    private static CraftItemStack getCraftStack(final ItemStack bukkit) {
+        if (bukkit instanceof final CraftItemStack craftItemStack) {
+            return craftItemStack;
+        } else {
+            return  (CraftItemStack) API_ITEM_STACK_CRAFT_DELEGATE_FIELD.get(bukkit);
+        }
     }
 }

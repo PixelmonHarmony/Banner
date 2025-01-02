@@ -1,6 +1,7 @@
 package org.bukkit;
 
 import com.google.common.base.Preconditions;
+import net.kyori.adventure.key.Key;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +20,7 @@ import java.util.UUID;
  * underscores, hyphens, and forward slashes.
  *
  */
-public final class NamespacedKey {
+public final class NamespacedKey implements Key {
 
     /**
      * The namespace representing all inbuilt keys.
@@ -246,5 +247,23 @@ public final class NamespacedKey {
     @Nullable
     public static NamespacedKey fromString(@NotNull String key) {
         return fromString(key, null);
+    }
+
+    @NotNull
+    @Override
+    public String namespace() {
+        return this.getNamespace();
+    }
+
+    @NotNull
+    @Override
+    public String value() {
+        return this.getKey();
+    }
+
+    @NotNull
+    @Override
+    public String asString() {
+        return this.namespace + ':' + this.key;
     }
 }

@@ -3,9 +3,14 @@ package org.bukkit.craftbukkit.v1_20_R1.inventory;
 import com.google.common.base.Preconditions;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
+import net.kyori.adventure.util.Codec;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import org.bukkit.Color;
@@ -18,6 +23,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.function.UnaryOperator;
 
 public final class CraftItemFactory implements ItemFactory {
     static final Color DEFAULT_LEATHER_COLOR = Color.fromRGB(0xA06540);
@@ -405,6 +413,11 @@ public final class CraftItemFactory implements ItemFactory {
     }
 
     @Override
+    public net.kyori.adventure.text.@org.jetbrains.annotations.NotNull Component displayName(@org.jetbrains.annotations.NotNull ItemStack itemStack) {
+        return JSONComponentSerializer.json().deserialize(Component.Serializer.toJson(CraftItemStack.asNMSCopy(itemStack).getDisplayName()));
+    }
+
+    @Override
     public ItemMeta asMetaFor(ItemMeta meta, Material material) {
         Preconditions.checkArgument(material != null, "Material cannot be null");
         Preconditions.checkArgument(meta instanceof CraftMetaItem, "ItemMeta of %s not created by %s", (meta != null ? meta.getClass().toString() : "null"), CraftItemFactory.class.getName());
@@ -457,5 +470,15 @@ public final class CraftItemFactory implements ItemFactory {
         }
 
         return CraftMagicNumbers.getMaterial(nmsItem);
+    }
+
+    @Override
+    public net.kyori.adventure.text.event.HoverEvent<net.kyori.adventure.text.event.HoverEvent.ShowItem> asHoverEvent(final ItemStack item, final java.util.function.UnaryOperator<net.kyori.adventure.text.event.HoverEvent.ShowItem> op) {
+        return net.kyori.adventure.text.event.HoverEvent.showItem(op.apply(
+                net.kyori.adventure.text.event.HoverEvent.ShowItem.showItem(
+                        item.getType().getKey(),
+                        item.getAmount()/*,
+                        io.papermc.paper.adventure.PaperAdventure.asAdventure(CraftItemStack.unwrap(item.getItemMeta()).getComponentsPatch())*/) // unwrap is fine here because the components patch will be safely copied
+        ));
     }
 }

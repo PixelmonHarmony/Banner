@@ -1752,6 +1752,7 @@ public interface Server extends PluginMessageRecipient {
         public void restart() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
+
     }
 
     @NotNull

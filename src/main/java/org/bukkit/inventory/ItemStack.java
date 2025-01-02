@@ -2,6 +2,7 @@ package org.bukkit.inventory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Translatable;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 /**
  * Represents a stack of items.
@@ -24,7 +26,7 @@ import java.util.Map;
  * use this class to encapsulate Materials for which {@link Material#isItem()}
  * returns false.</b>
  */
-public class ItemStack implements Cloneable, ConfigurationSerializable, Translatable {
+public class ItemStack implements Cloneable, ConfigurationSerializable, Translatable, net.kyori.adventure.text.event.HoverEventSource<net.kyori.adventure.text.event.HoverEvent.ShowItem>, net.kyori.adventure.translation.Translatable {
     private Material type = Material.AIR;
     private int amount = 0;
     private MaterialData data = null;
@@ -602,5 +604,24 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, Translat
     @NotNull
     public String getTranslationKey() {
         return Bukkit.getUnsafe().getTranslationKey(this);
+    }
+
+//    @Override
+//    public @NotNull HoverEvent<HoverEvent.ShowItem> asHoverEvent(@NotNull UnaryOperator<HoverEvent.ShowItem> op) {
+//        return org.bukkit.Bukkit.getServer().getItemFactory().asHoverEvent(this, op);
+//    }
+
+    public net.kyori.adventure.text.@NotNull Component displayName() {
+        return Bukkit.getServer().getItemFactory().displayName(this);
+    }
+
+    @Override
+    public @NotNull String translationKey() {
+        return getTranslationKey();
+    }
+
+    @Override
+    public @NotNull HoverEvent<HoverEvent.ShowItem> asHoverEvent(@NotNull UnaryOperator<HoverEvent.ShowItem> op) {
+        return HoverEvent.showItem(getType().getKey(), getAmount());
     }
 }
